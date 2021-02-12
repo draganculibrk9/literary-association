@@ -51,3 +51,7 @@ camunda:
   bpm:
     database:
       schema-update: drop-create
+
+geocoding-api:
+  key: ENC(a3TfW8tAvx6ZZYdgGAW+eaMGTT5HyJujool9sXquPyU28WQfg/sdSJBigJRJ6l3j)
+  url: http://api.positionstack.com/v1/forward

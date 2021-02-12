@@ -22,6 +22,7 @@ public class BetaReaderStatus {
     private Set<Genre> betaGenres;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer penaltyPoints = 0;
 
     @OneToOne(optional = false)

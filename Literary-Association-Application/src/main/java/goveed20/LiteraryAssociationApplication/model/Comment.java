@@ -29,5 +29,6 @@ public class Comment {
     private BaseUser user;
 
     @ManyToMany
+    @Builder.Default
     private Set<ApplicationPaper> applicationPapers = new HashSet<>();
 }
