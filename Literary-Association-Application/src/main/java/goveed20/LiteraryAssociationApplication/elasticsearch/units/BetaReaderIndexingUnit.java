@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Document(indexName = "literary-association", replicas = 0, type = "beta-reader")
+@Document(indexName = "literary-association-beta-readers", replicas = 0, type = "beta-reader")
 public class BetaReaderIndexingUnit {
     @Id
     @Field(type = FieldType.Long, store = true)

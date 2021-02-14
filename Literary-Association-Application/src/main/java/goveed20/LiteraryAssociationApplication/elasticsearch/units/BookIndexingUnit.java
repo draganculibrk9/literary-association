@@ -12,7 +12,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Document(indexName = "literary-association", replicas = 0, type = "book")
+@Document(indexName = "literary-association-books", replicas = 0, type = "book")
 public class BookIndexingUnit {
     @Id
     @Field(type = FieldType.Long, store = true)

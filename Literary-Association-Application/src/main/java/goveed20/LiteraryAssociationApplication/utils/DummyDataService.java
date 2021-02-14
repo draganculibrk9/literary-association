@@ -58,7 +58,7 @@ public class DummyDataService {
                     .password(passwordEncoder.encode("board_member_1"))
                     .verified(true)
                     .role(UserRole.BOARD_MEMBER)
-                    .location(Location.builder().longitude(0.0).latitude(0.0).city("test1").country("test1").build())
+                    .location(locationService.createLocation("Serbia", "Pancevo"))
                     .build();
 
             BaseUser boardMember2 = BaseUser.builder()
@@ -69,7 +69,7 @@ public class DummyDataService {
                     .verified(true)
                     .role(UserRole.BOARD_MEMBER)
                     .password(passwordEncoder.encode("board_member_2"))
-                    .location(Location.builder().longitude(0.0).latitude(0.0).city("test2").country("test2").build())
+                    .location(locationService.createLocation("Serbia", "Leskovac"))
                     .build();
 
             baseUserRepository.save(boardMember1);
@@ -103,7 +103,7 @@ public class DummyDataService {
                     .transactions(new HashSet<>())
                     .genres(new HashSet<>())
                     .betaReader(false)
-                    .location(locationService.createLocation("dummyland", "dummytown"))
+                    .location(locationService.createLocation("Serbia", "Sremska Mitrovica"))
                     .verified(true)
                     .build();
 
@@ -118,7 +118,7 @@ public class DummyDataService {
                     .transactions(new HashSet<>())
                     .genres(new HashSet<>())
                     .betaReader(false)
-                    .location(locationService.createLocation("dummyland", "dummytown"))
+                    .location(locationService.createLocation("Serbia", "Subotica"))
                     .verified(true)
                     .build();
 
@@ -143,7 +143,7 @@ public class DummyDataService {
             Writer writer2 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
                     .genres(new HashSet<>())
-                    .location(locationService.createLocation("Serbia", "Novi Sad"))
+                    .location(locationService.createLocation("Serbia", "Zrenjanin"))
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .verified(true)
@@ -161,7 +161,7 @@ public class DummyDataService {
             Writer writer3 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
                     .genres(new HashSet<>())
-                    .location(locationService.createLocation("Serbia", "Novi Sad"))
+                    .location(locationService.createLocation("Serbia", "Belgrade"))
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .verified(true)
@@ -179,7 +179,7 @@ public class DummyDataService {
             Writer writer4 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
                     .genres(new HashSet<>())
-                    .location(locationService.createLocation("Serbia", "Novi Sad"))
+                    .location(locationService.createLocation("Serbia", "Kragujevac"))
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .verified(true)
@@ -197,7 +197,7 @@ public class DummyDataService {
             Writer writer5 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
                     .genres(new HashSet<>())
-                    .location(locationService.createLocation("Serbia", "Novi Sad"))
+                    .location(locationService.createLocation("Serbia", "Nis"))
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .verified(true)

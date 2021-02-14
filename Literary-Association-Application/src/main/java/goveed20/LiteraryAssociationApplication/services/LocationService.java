@@ -2,6 +2,7 @@ package goveed20.LiteraryAssociationApplication.services;
 
 import goveed20.LiteraryAssociationApplication.model.Location;
 import goveed20.LiteraryAssociationApplication.utils.Coordinate;
+import goveed20.LiteraryAssociationApplication.utils.Coordinates;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,8 @@ public class LocationService {
                 .queryParam("limit", 1);
 
         try {
-            ResponseEntity<Coordinate> coordinate = restTemplate.getForEntity(builder.toUriString(), Coordinate.class);
-            return coordinate.getBody();
+            ResponseEntity<Coordinates> coordinate = restTemplate.getForEntity(builder.toUriString(), Coordinates.class);
+            return coordinate.getBody().getData().get(0);
         } catch (Exception e) {
             return new Coordinate(45.0, 45.0);
         }
