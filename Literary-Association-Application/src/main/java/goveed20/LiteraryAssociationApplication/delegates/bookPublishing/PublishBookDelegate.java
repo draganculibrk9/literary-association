@@ -1,5 +1,6 @@
 package goveed20.LiteraryAssociationApplication.delegates.bookPublishing;
 
+import goveed20.LiteraryAssociationApplication.elasticsearch.services.IndexingService;
 import goveed20.LiteraryAssociationApplication.model.Book;
 import goveed20.LiteraryAssociationApplication.model.WorkingPaper;
 import goveed20.LiteraryAssociationApplication.model.Writer;
@@ -29,6 +30,9 @@ public class PublishBookDelegate implements JavaDelegate {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private IndexingService indexingService;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -62,6 +66,8 @@ public class PublishBookDelegate implements JavaDelegate {
 
         book.setWriter(writer);
         bookRepository.save(book);
+
+        indexingService.indexBook(book);
 
         notificationService.sendSuccessNotification("Book successfully published");
     }

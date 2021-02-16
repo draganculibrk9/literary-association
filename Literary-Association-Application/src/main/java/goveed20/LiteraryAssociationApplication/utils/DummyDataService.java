@@ -1,5 +1,6 @@
 package goveed20.LiteraryAssociationApplication.utils;
 
+import goveed20.LiteraryAssociationApplication.elasticsearch.services.IndexingService;
 import goveed20.LiteraryAssociationApplication.model.*;
 import goveed20.LiteraryAssociationApplication.model.enums.GenreEnum;
 import goveed20.LiteraryAssociationApplication.model.enums.TransactionStatus;
@@ -47,8 +48,14 @@ public class DummyDataService {
     @Autowired
     private RetailerRepository retailerRepository;
 
+    @Autowired
+    private IndexingService indexingService;
+
+
     @EventListener(ApplicationReadyEvent.class)
     public void addDummyData() {
+        indexingService.deleteAllIndexes();
+
         if (baseUserRepository.findAllByRole(UserRole.BOARD_MEMBER).isEmpty()) {
             BaseUser boardMember1 = BaseUser.builder()
                     .name("board_member_1_name")
@@ -82,7 +89,7 @@ public class DummyDataService {
         }
 
         if (baseUserRepository.findAllByRole(UserRole.WRITER).isEmpty() && bookRepository.findAll().isEmpty() && retailerRepository.findAll().isEmpty()
-        && baseUserRepository.findAllByRole(UserRole.READER).isEmpty()) {
+                && baseUserRepository.findAllByRole(UserRole.READER).isEmpty()) {
 
             if (genreRepository.findAll().isEmpty()) {
                 Arrays.stream(GenreEnum.values()).forEach(e -> genreRepository.save(new Genre(null, e)));
@@ -303,6 +310,12 @@ public class DummyDataService {
             bookRepository.save(b3);
             bookRepository.save(book);
             bookRepository.save(book2);
+
+            indexingService.indexBook(b1);
+            indexingService.indexBook(b2);
+            indexingService.indexBook(b3);
+            indexingService.indexBook(book);
+            indexingService.indexBook(book2);
 
             InvoiceItem item = InvoiceItem.builder().name(b3.getTitle())
                     .price(b3.getPrice()).quantity(1).build();

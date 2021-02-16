@@ -1,5 +1,6 @@
 package goveed20.LiteraryAssociationApplication.delegates.readerRegistration;
 
+import goveed20.LiteraryAssociationApplication.elasticsearch.services.IndexingService;
 import goveed20.LiteraryAssociationApplication.model.BetaReaderStatus;
 import goveed20.LiteraryAssociationApplication.model.Reader;
 import goveed20.LiteraryAssociationApplication.model.VerificationToken;
@@ -44,11 +45,14 @@ public class CreateReaderDelegate implements JavaDelegate {
     @Autowired
     private GenreRepository genreRepository;
 
+    @Autowired
+    private IndexingService indexingService;
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute(DelegateExecution delegateExecution) {
         Map<String, Object> data = (Map<String, Object>) delegateExecution.getVariable("data");
-        Reader reader1 = readerRepository.findByUsername(String.valueOf(data.get("username")));
+
         if (readerRepository.findByUsername(String.valueOf(data.get("username"))) != null) {
             throw notificationService.sendErrorNotification("User with given username already exists");
         }
@@ -58,6 +62,11 @@ public class CreateReaderDelegate implements JavaDelegate {
 
         Reader reader = createReader(data);
         readerRepository.save(reader);
+
+        if (reader.getBetaReader()) {
+            indexingService.indexBetaReader(reader);
+        }
+
         delegateExecution.setVariable("user", reader.getUsername());
 
         camundaUserService.createCamundaUser(reader);

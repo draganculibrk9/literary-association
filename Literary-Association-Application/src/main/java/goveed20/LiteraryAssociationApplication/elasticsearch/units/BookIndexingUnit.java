@@ -18,21 +18,21 @@ public class BookIndexingUnit {
     @Field(type = FieldType.Long, store = true)
     private Long id;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
     private String title;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
     private String genre;
 
     @Field(type = FieldType.Boolean, store = true)
     private Boolean openAccess;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
     private String writers;
 
     @Field(type = FieldType.Text, store = true)
     private String basicInfo;
 
-    @Field(type = FieldType.Text, store = true)
-    private String downloadUrl;
+    @Field(type = FieldType.Text, store = true, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
+    private String text;
 }

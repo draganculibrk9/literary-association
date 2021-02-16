@@ -1,5 +1,8 @@
 package goveed20.LiteraryAssociationApplication.model.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum GenreEnum {
     ADVENTURE("Avantura"),
     FANTASY("Fantastika"),
