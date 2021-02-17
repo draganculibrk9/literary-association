@@ -1,22 +1,19 @@
 import React from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, ListGroup } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
 
-const BookListItem = ({ id, ISBN, title, publisher, year }) => {
+const BookListItem = ({ id, title, openAccess, basicInfo, text }) => {
     const history = useHistory()
 
     const seeBookDetails = () => history.push(`/dashboard/books/${id}`)
 
     return (
-        <tr>
-            <td>{ISBN}</td>
-            <td>{title}</td>
-            <td>{publisher}</td>
-            <td>{year}</td>
-            <td>
-                <Button onClick={seeBookDetails}>Details</Button>
-            </td>
-        </tr>
+        <ListGroup.Item>
+            <span><a>{title}</a>&nbsp;<Button
+                onClick={seeBookDetails}>{openAccess ? 'Download' : 'Purchase'}</Button></span>
+            <span>{basicInfo}</span>
+            <div>{text}</div>
+        </ListGroup.Item>
     )
 }
 

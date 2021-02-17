@@ -16,6 +16,17 @@ export const getBooks = (myBooks) => {
     }
 }
 
+export const searchBooks = (query) => {
+    return async dispatch => {
+        const books = await bookService.searchBooks(query)
+
+        dispatch({
+            type: 'GET_BOOKS',
+            books
+        })
+    }
+}
+
 export const setBook = (id) => {
     return async dispatch => {
         const book = await bookService.getBook(id)

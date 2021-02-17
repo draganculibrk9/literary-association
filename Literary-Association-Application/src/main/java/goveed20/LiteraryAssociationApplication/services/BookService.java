@@ -88,7 +88,7 @@ public class BookService {
                         .postTags("</b>")
                         .numOfFragments(1)
                         .fragmentSize(250)
-        ).withPageable(PageRequest.of(searchQuery.getPage() - 1, 3))
+        ).withPageable(PageRequest.of(searchQuery.getPage(), 3))
                 .build();
 
         return elasticsearchTemplate.queryForPage(query, BookIndexingUnit.class, new ResultMapper());
