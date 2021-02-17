@@ -2,6 +2,10 @@ package goveed20.LiteraryAssociationApplication.services;
 
 import goveed20.LiteraryAssociationApplication.dtos.BookDTO;
 import goveed20.LiteraryAssociationApplication.dtos.BookListItemDTO;
+import goveed20.LiteraryAssociationApplication.dtos.SearchQueryDTO;
+import goveed20.LiteraryAssociationApplication.elasticsearch.units.BookIndexingUnit;
+import goveed20.LiteraryAssociationApplication.elasticsearch.utils.BooleanOperator;
+import goveed20.LiteraryAssociationApplication.elasticsearch.utils.ResultMapper;
 import goveed20.LiteraryAssociationApplication.exceptions.BusinessProcessException;
 import goveed20.LiteraryAssociationApplication.exceptions.NotFoundException;
 import goveed20.LiteraryAssociationApplication.model.*;
@@ -12,8 +16,16 @@ import goveed20.LiteraryAssociationApplication.repositories.RetailerRepository;
 import goveed20.LiteraryAssociationApplication.repositories.WorkingPaperRepository;
 import org.apache.commons.io.FileUtils;
 import org.camunda.bpm.engine.RuntimeService;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +55,44 @@ public class BookService {
 
     @Autowired
     private RetailerRepository retailerRepository;
+
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
+    public Page<BookIndexingUnit> searchBooks(SearchQueryDTO searchQuery) {
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        searchQuery.getSearchParams().forEach(sp -> {
+            String key = sp.getKey();
+            String value = sp.getValue();
+
+            if (sp.getBooleanOperator().equals(BooleanOperator.AND)) {
+                if (sp.getPhraze()) {
+                    boolQueryBuilder.must(QueryBuilders.matchPhraseQuery(key, value));
+                } else {
+                    boolQueryBuilder.must(QueryBuilders.commonTermsQuery(key, value));
+                }
+            } else {
+                if (sp.getPhraze()) {
+                    boolQueryBuilder.should(QueryBuilders.matchPhraseQuery(key, value));
+                } else {
+                    boolQueryBuilder.should(QueryBuilders.commonTermsQuery(key, value));
+                }
+            }
+        });
+
+        SearchQuery query = queryBuilder.withQuery(boolQueryBuilder).withHighlightFields(
+                new HighlightBuilder.Field("text")
+                        .preTags("<b>")
+                        .postTags("</b>")
+                        .numOfFragments(1)
+                        .fragmentSize(250)
+        ).withPageable(PageRequest.of(searchQuery.getPage() - 1, 3))
+                .build();
+
+        return elasticsearchTemplate.queryForPage(query, BookIndexingUnit.class, new ResultMapper());
+    }
 
     public List<BookListItemDTO> getBooks() {
         Set<String> bookTitles = new HashSet<>();

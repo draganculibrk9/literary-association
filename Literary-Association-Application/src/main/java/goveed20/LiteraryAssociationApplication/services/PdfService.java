@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.io.RandomAccessFile;
 import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,9 @@ public class PdfService {
         PDFParser parser = new PDFParser(new RandomAccessFile(pdfFile, "r"));
         parser.parse();
         PDFTextStripper stripper = new PDFTextStripper();
-        return stripper.getText(parser.getPDDocument());
+        PDDocument document = parser.getPDDocument();
+        String text = stripper.getText(document);
+        document.close();
+        return text;
     }
 }

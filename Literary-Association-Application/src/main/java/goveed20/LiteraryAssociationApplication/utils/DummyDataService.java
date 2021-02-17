@@ -25,7 +25,7 @@ import java.util.Set;
 @Service
 public class DummyDataService {
 
-    private static final String booksFolder = "Literary-Association-Application/src/main/resources/books/";
+    private static final String booksFolder = "literary-association/Literary-Association-Application/src/main/resources/books/";
 
     @Autowired
     private BaseUserRepository baseUserRepository;
@@ -84,8 +84,6 @@ public class DummyDataService {
 
             camundaUserService.createCamundaUser(boardMember1);
             camundaUserService.createCamundaUser(boardMember2);
-
-            System.out.println("Created dummy board members!");
         }
 
         if (baseUserRepository.findAllByRole(UserRole.WRITER).isEmpty() && bookRepository.findAll().isEmpty() && retailerRepository.findAll().isEmpty()
@@ -284,7 +282,7 @@ public class DummyDataService {
                     .genre(genreRepository.findByGenre(GenreEnum.COOKBOOKS))
                     .synopsis("Sinobsis")
                     .price(302.00)
-                    .file("Literary-Association-Application/src/main/resources/books/Kljiga.pdf")
+                    .file(String.format("%sKljiga.pdf", booksFolder))
                     .additionalAuthors("Gagata Gagic")
                     .build();
             book.setWriter(writer4);
@@ -300,7 +298,7 @@ public class DummyDataService {
                     .genre(genreRepository.findByGenre(GenreEnum.COOKBOOKS))
                     .synopsis("Sinobsis")
                     .price(203.00)
-                    .file("Literary-Association-Application/src/main/resources/books/Tajtl.pdf")
+                    .file(String.format("%sTajtl.pdf", booksFolder))
                     .additionalAuthors("Ivo Andric,Lazo Lazic")
                     .build();
             book2.setWriter(writer5);
@@ -416,5 +414,6 @@ public class DummyDataService {
             baseUserRepository.save(lector);
             camundaUserService.createCamundaUser(lector);
         }
+        System.out.println("Created dummy data!");
     }
 }

@@ -1,9 +1,12 @@
 package goveed20.LiteraryAssociationApplication.controllers;
 
 import goveed20.LiteraryAssociationApplication.dtos.BookListItemDTO;
+import goveed20.LiteraryAssociationApplication.dtos.SearchQueryDTO;
+import goveed20.LiteraryAssociationApplication.elasticsearch.units.BookIndexingUnit;
 import goveed20.LiteraryAssociationApplication.exceptions.NotFoundException;
 import goveed20.LiteraryAssociationApplication.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +21,12 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+
+    //@PreAuthorize("hasAuthority('READER')")
+    @PostMapping("/search")
+    public ResponseEntity<Page<BookIndexingUnit>> searchBooks(@RequestBody SearchQueryDTO searchQuery) {
+        return new ResponseEntity<>(bookService.searchBooks(searchQuery), HttpStatus.OK);
+    }
 
     @PreAuthorize("hasAuthority('READER') or hasAuthority('WRITER')")
     @GetMapping
@@ -37,7 +46,7 @@ public class BookController {
 
     @GetMapping("/{bookTitle}/download")
     @PreAuthorize("hasAuthority('EDITOR') or hasAuthority('READER') or hasAuthority('LECTOR') or hasAuthority('WRITER')")
-    public ResponseEntity downloadBook(@PathVariable String bookTitle) {
+    public ResponseEntity<?> downloadBook(@PathVariable String bookTitle) {
         try {
             return bookService.downloadBook(bookTitle);
         } catch (Exception e) {

@@ -27,6 +27,6 @@ public class BetaReaderIndexingUnit {
     @Field(type = FieldType.Text, store = true, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
     private String name;
 
-    @Field(type = FieldType.Keyword, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
+    @Field(type = FieldType.Keyword)
     private List<String> genres;
 }

@@ -21,7 +21,7 @@ public class BookIndexingUnit {
     @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
     private String title;
 
-    @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
+    @Field(type = FieldType.Keyword)
     private String genre;
 
     @Field(type = FieldType.Boolean, store = true)
