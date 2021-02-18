@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ListGroup, Table } from 'react-bootstrap'
-import { searchBooks, getBooks } from '../reducers/bookReducer'
+import { clearSearch, getBooks } from '../reducers/bookReducer'
 import BookListItem from './BookListItem'
+import SearchForm from './SearchForm'
+import Pagination from './Pagination'
 
 const BookList = ({ myBooks }) => {
     const dispatch = useDispatch()
@@ -11,10 +13,7 @@ const BookList = ({ myBooks }) => {
         if (myBooks) {
             dispatch(getBooks(myBooks))
         } else {
-            dispatch(searchBooks({
-                page: 1,
-                searchParams: []
-            }))
+            dispatch(clearSearch())
         }
     }, [])
 
@@ -49,11 +48,15 @@ const BookList = ({ myBooks }) => {
         return (
             <div>
                 <h2>Books</h2>
+                <SearchForm/>
+                <br/>
                 <ListGroup>
                     {
-                        books.map(b => <BookListItem key={b.id}/>)
+                        books.map(b => <BookListItem key={b.id} {...b}/>)
                     }
                 </ListGroup>
+                <br/>
+                <Pagination/>
             </div>
         )
     }

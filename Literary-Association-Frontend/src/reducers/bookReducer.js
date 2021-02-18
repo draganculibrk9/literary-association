@@ -22,7 +22,36 @@ export const searchBooks = (query) => {
 
         dispatch({
             type: 'GET_BOOKS',
-            books
+            books: books ? books['content'] : []
+        })
+
+        dispatch({
+            type: 'SET_PAGE',
+            page: query['page']
+        })
+
+        dispatch({
+            type: 'SET_TOTAL_PAGES',
+            totalPages: books['totalPages']
+        })
+    }
+}
+
+export const clearSearch = () => {
+    return async dispatch => {
+        dispatch({
+            type: 'GET_BOOKS',
+            books: []
+        })
+
+        dispatch({
+            type: 'SET_PAGE',
+            page: 0
+        })
+
+        dispatch({
+            type: 'SET_TOTAL_PAGES',
+            totalPages: 0
         })
     }
 }

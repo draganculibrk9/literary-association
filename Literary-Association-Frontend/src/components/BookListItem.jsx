@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button, ListGroup } from 'react-bootstrap'
-import { useHistory } from 'react-router-dom'
+import { Button, Col, ListGroup, Row } from 'react-bootstrap'
+import { Link, useHistory } from 'react-router-dom'
 
 const BookListItem = ({ id, title, openAccess, basicInfo, text }) => {
     const history = useHistory()
@@ -9,10 +9,22 @@ const BookListItem = ({ id, title, openAccess, basicInfo, text }) => {
 
     return (
         <ListGroup.Item>
-            <span><a>{title}</a>&nbsp;<Button
-                onClick={seeBookDetails}>{openAccess ? 'Download' : 'Purchase'}</Button></span>
-            <span>{basicInfo}</span>
-            <div>{text}</div>
+            <Row className="justify-content-between">
+                <Col>
+                    <Link style={{ color: '#1a0dab' }} to={`/dashboard/books/${id}`}>{title}</Link>
+                </Col>
+                <Col>
+                    <Button onClick={seeBookDetails}>{openAccess ? 'Download' : 'Purchase'}</Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <p style={{ color: '#006621', fontSize: 13 }}>{basicInfo}</p>
+                </Col>
+            </Row>
+            <Row>
+                <Col>{text}</Col>
+            </Row>
         </ListGroup.Item>
     )
 }

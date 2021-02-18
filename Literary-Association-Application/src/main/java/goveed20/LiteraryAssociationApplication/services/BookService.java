@@ -9,9 +9,11 @@ import goveed20.LiteraryAssociationApplication.elasticsearch.utils.ResultMapper;
 import goveed20.LiteraryAssociationApplication.exceptions.BusinessProcessException;
 import goveed20.LiteraryAssociationApplication.exceptions.NotFoundException;
 import goveed20.LiteraryAssociationApplication.model.*;
+import goveed20.LiteraryAssociationApplication.model.enums.GenreEnum;
 import goveed20.LiteraryAssociationApplication.model.enums.TransactionStatus;
 import goveed20.LiteraryAssociationApplication.model.enums.UserRole;
 import goveed20.LiteraryAssociationApplication.repositories.BookRepository;
+import goveed20.LiteraryAssociationApplication.repositories.GenreRepository;
 import goveed20.LiteraryAssociationApplication.repositories.RetailerRepository;
 import goveed20.LiteraryAssociationApplication.repositories.WorkingPaperRepository;
 import org.apache.commons.io.FileUtils;
@@ -58,6 +60,9 @@ public class BookService {
 
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
+
+    @Autowired
+    private GenreRepository genreRepository;
 
     public Page<BookIndexingUnit> searchBooks(SearchQueryDTO searchQuery) {
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
@@ -214,5 +219,9 @@ public class BookService {
         }
 
         return new HashSet<>();
+    }
+
+    public List<String> getGenres() {
+        return genreRepository.findAll().stream().map(g -> g.getGenre().getSerbianName()).collect(Collectors.toList());
     }
 }

@@ -7,6 +7,11 @@ const searchBooks = async (query) => {
     return response.data
 }
 
+const getGenres = async () => {
+    const response = await axios.get(`${BASE_URL}/book/genre`)
+    return response.data
+}
+
 const getBooks = async () => {
     const response = await axios.get(`${BASE_URL}/book`)
     return response.data
@@ -41,6 +46,7 @@ const getMyBooks = async () => {
 
 const bookService = {
     searchBooks,
+    getGenres,
     getBooks,
     getBook,
     getMyBooks,

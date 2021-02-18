@@ -28,6 +28,11 @@ public class BookController {
         return new ResponseEntity<>(bookService.searchBooks(searchQuery), HttpStatus.OK);
     }
 
+    @GetMapping("/genre")
+    public ResponseEntity<List<String>> getGenres() {
+        return new ResponseEntity<>(bookService.getGenres(), HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAuthority('READER') or hasAuthority('WRITER')")
     @GetMapping
     public ResponseEntity<List<BookListItemDTO>> getBooks() {
