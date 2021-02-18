@@ -1,27 +1,25 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { ButtonGroup, ToggleButton } from 'react-bootstrap'
 
-const BooleanOperationButton = () => {
+const BooleanOperationButton = ({ name, value, setValue }) => {
     const radios = [
         { name: '&', value: 'AND' },
         { name: '|', value: 'OR' }
     ]
-
-    const [radioValue, setRadioValue] = useState(radios[0].value)
-
 
     return (
         <ButtonGroup toggle>
             {
                 radios.map(r => (
                     <ToggleButton
+                        size="sm"
                         key={r.name}
                         value={r.value}
                         type="radio"
                         variant="secondary"
                         name="radio"
-                        checked={radioValue === r.value}
-                        onChange={({ currentTarget }) => setRadioValue(currentTarget.value)}
+                        checked={value === r.value}
+                        onChange={({ currentTarget }) => setValue(name, currentTarget.value)}
                     >
                         {r.name}
                     </ToggleButton>

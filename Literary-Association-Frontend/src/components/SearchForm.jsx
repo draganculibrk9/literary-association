@@ -13,6 +13,22 @@ const SearchForm = () => {
         content: '',
         genre: ''
     })
+    const [booleanOps, setBooleanOps] = useState({
+        title: 'AND',
+        writers: 'AND',
+        content: 'AND',
+        genre: 'AND'
+    })
+
+    const [firstLoad, setFirstLoad] = useState(true)
+
+    const setBooleanOp = (name, value) => {
+        const newBooleanOps = {
+            ...booleanOps
+        }
+        newBooleanOps[name] = value
+        setBooleanOps(newBooleanOps)
+    }
 
     const page = useSelector(state => state.pagination.page)
 
@@ -21,7 +37,9 @@ const SearchForm = () => {
     }, [])
 
     useEffect(() => {
-        search()
+        if (!firstLoad) {
+            search()
+        }
     }, [page])
 
     const dispatch = useDispatch()
@@ -34,7 +52,7 @@ const SearchForm = () => {
                     key: field,
                     value: fields[field].replace('"', ''),
                     phraze: fields[field].includes('"'),
-                    booleanOperator: 'AND'
+                    booleanOperator: booleanOps[field]
                 })
             }
         }
@@ -45,6 +63,7 @@ const SearchForm = () => {
         }
 
         dispatch(searchBooks(query))
+        setFirstLoad(false)
     }
 
     const onSubmit = (event) => {
@@ -54,6 +73,7 @@ const SearchForm = () => {
 
     return (
         <Form inline className="justify-content-between" onSubmit={onSubmit}>
+            <BooleanOperationButton name="title" setValue={setBooleanOp} value={booleanOps['title']}/>
             <Form.Control
                 as="input"
                 pattern='^[\p{L}]+([\s]{1,1}[\p{L}]+)*$|^"[\p{L}]+([\s]{1,1}[\p{L}]+)*"$'
@@ -61,7 +81,7 @@ const SearchForm = () => {
                 value={fields['title']}
                 onChange={({ target }) => setFields({ ...fields, title: target.value })}
             />
-            <BooleanOperationButton/>
+            <BooleanOperationButton name="writers" setValue={setBooleanOp} value={booleanOps['writers']}/>
             <Form.Control
                 as="input"
                 pattern='^[\p{L}]+([\s]{1,1}[\p{L}]+)*$|^"[\p{L}]+([\s]{1,1}[\p{L}]+)*"$'
@@ -69,7 +89,7 @@ const SearchForm = () => {
                 value={fields['writers']}
                 onChange={({ target }) => setFields({ ...fields, writers: target.value })}
             />
-            <BooleanOperationButton/>
+            <BooleanOperationButton name="content" setValue={setBooleanOp} value={booleanOps['content']}/>
             <Form.Control
                 as="input"
                 pattern='^[\p{L}]+([\s]{1,1}[\p{L}]+)*$|^"[\p{L}]+([\s]{1,1}[\p{L}]+)*"$'
@@ -77,7 +97,7 @@ const SearchForm = () => {
                 value={fields['content']}
                 onChange={({ target }) => setFields({ ...fields, content: target.value })}
             />
-            <BooleanOperationButton/>
+            <BooleanOperationButton name="genre" setValue={setBooleanOp} value={booleanOps['genre']}/>
             <Form.Control
                 as="select"
                 value={fields['genre']}
