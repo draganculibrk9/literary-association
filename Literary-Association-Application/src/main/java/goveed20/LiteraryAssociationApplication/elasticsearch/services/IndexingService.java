@@ -56,6 +56,7 @@ public class IndexingService {
                         .genres(reader.getBetaReaderStatus().getBetaGenres().stream()
                                 .map(g -> g.getGenre().getSerbianName())
                                 .collect(Collectors.toList()))
+                        .username(reader.getUsername())
                         .build()
         );
     }

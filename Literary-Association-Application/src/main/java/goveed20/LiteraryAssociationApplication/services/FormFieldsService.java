@@ -34,9 +34,6 @@ public class FormFieldsService {
     private GenreRepository genreRepository;
 
     @Autowired
-    private BetaReaderStatusRepository betaReaderStatusRepository;
-
-    @Autowired
     private WorkingPaperRepository workingPaperRepository;
 
     @Autowired
@@ -50,6 +47,9 @@ public class FormFieldsService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private BetaReaderService betaReaderService;
 
     public void setSelectFormFields(Task task) {
         TaskFormData tfd = formService.getTaskFormData(task.getId());
@@ -100,9 +100,11 @@ public class FormFieldsService {
                 case "beta_readers":
                     String title = (String) runtimeService.getVariable(task.getProcessInstanceId(), "working_paper");
                     WorkingPaper workingPaper = workingPaperRepository.findByTitle(title);
+                    String writerUsername = (String) runtimeService.getVariable(task.getProcessInstanceId(), "writer");
+                    Writer writer = writerRepository.findByUsername(writerUsername).get();
                     p.getProperties().put("options", UtilService
-                            .serializeBetaReaders(new HashSet<>(betaReaderStatusRepository
-                                    .findByBetaGenresContaining(workingPaper.getGenre()))));
+                            .serializeBetaReaderIndexingUnits(betaReaderService.getBetaReaders(workingPaper.getGenre().getGenre().getSerbianName(),
+                                    writer.getLocation().getLatitude(), writer.getLocation().getLongitude())));
                     break;
                 case "editors":
                     p.getProperties().put("options", UtilService.serializeEditors(new HashSet<>(

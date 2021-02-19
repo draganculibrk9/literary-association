@@ -29,4 +29,7 @@ public class BetaReaderIndexingUnit {
 
     @Field(type = FieldType.Keyword)
     private List<String> genres;
+
+    @Field(type = FieldType.Text)
+    private String username;
 }
