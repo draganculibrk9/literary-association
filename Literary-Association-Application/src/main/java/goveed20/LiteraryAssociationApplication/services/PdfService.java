@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PdfService {
-    private static final String writingsFolder = "Literary-Association-Application/src/main/resources/writings/";
+    private static final String writingsFolder = "literary-association/Literary-Association-Application/src/main/resources/writings/";
 
 
     public List<String> pdfToBase64(List<String> paths) {

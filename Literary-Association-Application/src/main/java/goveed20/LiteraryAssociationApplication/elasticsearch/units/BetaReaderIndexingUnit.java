@@ -18,13 +18,13 @@ import java.util.List;
 @Document(indexName = "literary-association-beta-readers", replicas = 0, type = "beta-reader")
 public class BetaReaderIndexingUnit {
     @Id
-    @Field(type = FieldType.Long, store = true)
+    @Field(type = FieldType.Long)
     private Long id;
 
     @GeoPointField
     private GeoPoint location;
 
-    @Field(type = FieldType.Text, store = true, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
+    @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
     private String name;
 
     @Field(type = FieldType.Keyword)

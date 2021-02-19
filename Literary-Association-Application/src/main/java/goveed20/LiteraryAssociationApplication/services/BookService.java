@@ -9,7 +9,6 @@ import goveed20.LiteraryAssociationApplication.elasticsearch.utils.ResultMapper;
 import goveed20.LiteraryAssociationApplication.exceptions.BusinessProcessException;
 import goveed20.LiteraryAssociationApplication.exceptions.NotFoundException;
 import goveed20.LiteraryAssociationApplication.model.*;
-import goveed20.LiteraryAssociationApplication.model.enums.GenreEnum;
 import goveed20.LiteraryAssociationApplication.model.enums.TransactionStatus;
 import goveed20.LiteraryAssociationApplication.model.enums.UserRole;
 import goveed20.LiteraryAssociationApplication.repositories.BookRepository;
@@ -44,7 +43,7 @@ import java.util.stream.Collectors;
 @Service
 public class BookService {
 
-    private static final String booksFolder = "Literary-Association-Application/src/main/resources/books/";
+    private static final String booksFolder = "literary-association/Literary-Association-Application/src/main/resources/books/";
 
     @Autowired
     private RuntimeService runtimeService;
@@ -222,6 +221,6 @@ public class BookService {
     }
 
     public List<String> getGenres() {
-        return genreRepository.findAll().stream().map(g -> g.getGenre().getSerbianName()).collect(Collectors.toList());
+        return genreRepository.findAll().stream().map(g -> g.getGenre().getSerbianName()).sorted().collect(Collectors.toList());
     }
 }

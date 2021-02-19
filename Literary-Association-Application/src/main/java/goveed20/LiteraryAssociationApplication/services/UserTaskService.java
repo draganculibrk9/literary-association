@@ -40,7 +40,7 @@ public class UserTaskService {
     @Autowired
     private PdfService pdfService;
 
-    private static final String tempFolder = "Literary-Association-Application/src/main/resources/temp/";
+    private static final String tempFolder = "literary-association/Literary-Association-Application/src/main/resources/temp/";
 
     public Set<TaskPreviewDTO> getActiveTasksForUser(String username) {
         return taskService
