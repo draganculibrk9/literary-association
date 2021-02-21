@@ -1,6 +1,7 @@
 package goveed20.LiteraryAssociationApplication.utils;
 
 import goveed20.LiteraryAssociationApplication.elasticsearch.services.IndexingService;
+import goveed20.LiteraryAssociationApplication.elasticsearch.units.BetaReaderIndexingUnit;
 import goveed20.LiteraryAssociationApplication.model.*;
 import goveed20.LiteraryAssociationApplication.model.enums.GenreEnum;
 import goveed20.LiteraryAssociationApplication.model.enums.TransactionStatus;
@@ -9,6 +10,7 @@ import goveed20.LiteraryAssociationApplication.repositories.BaseUserRepository;
 import goveed20.LiteraryAssociationApplication.repositories.BookRepository;
 import goveed20.LiteraryAssociationApplication.repositories.GenreRepository;
 import goveed20.LiteraryAssociationApplication.repositories.RetailerRepository;
+import goveed20.LiteraryAssociationApplication.services.BetaReaderService;
 import goveed20.LiteraryAssociationApplication.services.CamundaUserService;
 import goveed20.LiteraryAssociationApplication.services.LocationService;
 import goveed20.LiteraryAssociationApplication.services.PlagiarismService;
@@ -19,10 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class DummyDataService {
@@ -55,6 +56,9 @@ public class DummyDataService {
 
     @Autowired
     private PlagiarismService plagiarismService;
+
+    @Autowired
+    private BetaReaderService betaReaderService;
 
 
     @EventListener(ApplicationReadyEvent.class)
@@ -123,10 +127,40 @@ public class DummyDataService {
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .genres(new HashSet<>())
-                    .betaReader(false)
-                    .location(locationService.createLocation("Serbia", "Subotica"))
+                    .betaReader(true)
+                    .location(locationService.createLocation("Serbia", "Sremska Kamenica"))
                     .verified(true)
                     .build();
+
+
+            BetaReaderStatus status1 = BetaReaderStatus.builder()
+                    .betaGenres(Collections.singleton(genreRepository.findByGenre(GenreEnum.SCIENCE)))
+                    .reader(reader2)
+                    .build();
+
+            reader2.setBetaReaderStatus(status1);
+
+            Reader reader3 = Reader.readerBuilder()
+                    .role(UserRole.READER)
+                    .username("reader3")
+                    .password(passwordEncoder.encode("password3"))
+                    .name("reader3")
+                    .surname("reader3")
+                    .email("reader3@maildrop.cc")
+                    .comments(new HashSet<>())
+                    .transactions(new HashSet<>())
+                    .genres(new HashSet<>())
+                    .betaReader(true)
+                    .location(locationService.createLocation("Croatia", "Split"))
+                    .verified(true)
+                    .build();
+
+            BetaReaderStatus status2 = BetaReaderStatus.builder()
+                    .reader(reader3)
+                    .betaGenres(Stream.of(genreRepository.findByGenre(GenreEnum.SCIENCE), genreRepository.findByGenre(GenreEnum.ADVENTURE)).collect(Collectors.toSet()))
+                    .build();
+
+            reader3.setBetaReaderStatus(status2);
 
             Writer writer1 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
@@ -388,8 +422,13 @@ public class DummyDataService {
 
             baseUserRepository.save(reader1);
             baseUserRepository.save(reader2);
+            baseUserRepository.save(reader3);
             camundaUserService.createCamundaUser(reader1);
             camundaUserService.createCamundaUser(reader2);
+            camundaUserService.createCamundaUser(reader3);
+
+            indexingService.indexBetaReader(reader2);
+            indexingService.indexBetaReader(reader3);
         }
 
 
@@ -464,5 +503,15 @@ public class DummyDataService {
             camundaUserService.createCamundaUser(lector);
         }
         System.out.println("Created dummy data!");
+
+        //testGeoSearch();
+    }
+
+    private void testGeoSearch() {
+        // candidates by genre are reader2 and reader3
+        // coordinates are set to Split, Croatia
+        // -> reader2 should be printed
+        List<BetaReaderIndexingUnit> units = betaReaderService.getBetaReaders("Nauka", 43.508133, 16.440193);
+        units.forEach(y -> System.out.println(y.getUsername()));
     }
 }

@@ -33,7 +33,10 @@ public class ElasticsearchConfiguration {
 
         Settings settings = Settings.builder()
                 .put("http.enabled", true)
-                .put("cluster.name", "literary-association-node")
+                .put("cluster.name", "literary-association-cluster")
+                .put("http.port", 9201)
+                .put("node.name", "literary-association-node")
+                .put("discovery.zen.ping.unicast.hosts", "localhost:9301")
                 .put("transport.type", "netty4")
                 .put("client.transport.sniff", true)
                 .put("path.data", new File(tmpDir, "data").getAbsolutePath())

@@ -32,7 +32,7 @@ public class IndexingService {
                         .title(book.getTitle())
                         .genre(book.getGenre().getGenre().getSerbianName())
                         .openAccess(book.getPrice() == 0.0)
-                        .writers(book.getAdditionalAuthors())
+                        .writers(getAuthors(book))
                         .basicInfo(createBasicInfo(book))
                         .text(pdfService.extractText(new File(book.getFile())))
                         .build()

@@ -3,7 +3,7 @@ package goveed20.LiteraryAssociationApplication.services;
 import goveed20.LiteraryAssociationApplication.elasticsearch.units.BetaReaderIndexingUnit;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -19,12 +19,13 @@ public class BetaReaderService {
     private ElasticsearchTemplate elasticsearchTemplate;
 
     public List<BetaReaderIndexingUnit> getBetaReaders(String genre, Double latitude, Double longitude) {
-        QueryBuilder queryBuilder = QueryBuilders.geoDistanceQuery("location")
+        GeoDistanceQueryBuilder geoDistanceQueryBuilder = QueryBuilders
+                .geoDistanceQuery("location")
                 .point(latitude, longitude)
                 .distance(100, DistanceUnit.KILOMETERS);
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        boolQueryBuilder.mustNot(queryBuilder);
+        boolQueryBuilder.mustNot(geoDistanceQueryBuilder);
         boolQueryBuilder.must(QueryBuilders.matchQuery("genres", genre));
 
         SearchQuery query = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).build();

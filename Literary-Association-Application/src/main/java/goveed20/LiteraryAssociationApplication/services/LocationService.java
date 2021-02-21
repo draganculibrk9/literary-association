@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class LocationService {
@@ -31,15 +30,12 @@ public class LocationService {
     }
 
     private Coordinate doGeocoding(String country, String city) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("access_key", geocodingApiKey)
-                .queryParam("query", String.format("%s, %s", city, country))
-                .queryParam("limit", 1);
-
+        String requestUrl = String.format("%s?access_key=%s&query=%s&limit=1", url, geocodingApiKey, String.format("%s, %s", city, country));
         try {
-            ResponseEntity<Coordinates> coordinate = restTemplate.getForEntity(builder.toUriString(), Coordinates.class);
+            ResponseEntity<Coordinates> coordinate = restTemplate.getForEntity(requestUrl, Coordinates.class);
             return coordinate.getBody().getData().get(0);
         } catch (Exception e) {
+            System.out.println("Failed to get coordinates, setting default values");
             return new Coordinate(45.0, 45.0);
         }
     }

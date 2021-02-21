@@ -24,7 +24,7 @@ public class BetaReaderIndexingUnit {
     @GeoPointField
     private GeoPoint location;
 
-    @Field(type = FieldType.Text, analyzer = "serbian-analyzer", searchAnalyzer = "serbian-analyzer")
+    @Field(type = FieldType.Text)
     private String name;
 
     @Field(type = FieldType.Keyword)
