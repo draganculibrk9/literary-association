@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class TaskExtensionsService {
 
     public Map<String, String> getExtensions(String bpmnFile, String taskId) {
-        String bpmnFilePath = String.format("Literary-Association-Application/src/main/resources/%s.bpmn", bpmnFile);
+        String bpmnFilePath = String.format("literary-association/Literary-Association-Application/src/main/resources/%s.bpmn", bpmnFile);
         File file = new File(bpmnFilePath);
         BpmnModelInstance modelInstance = Bpmn.readModelFromFile(file);
 

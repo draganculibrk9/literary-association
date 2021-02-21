@@ -13,4 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class PlagiarismResultDTO {
     private List<PaperDTO> similarPapers;
+    private PaperDTO uploadedPaper;
 }

@@ -26,6 +26,7 @@ public class ChooseEditorDelegate implements JavaDelegate {
         BaseUser editor = editors.get((int) (Math.random() * editors.size()));
 
         delegateExecution.setVariable("editor", editor.getUsername());
+        System.out.println(editor.getUsername());
 
         String text = String.format("Dear %s %s,\nNew book request is received from %s", editor.getName(),
                 editor.getSurname(), delegateExecution.getVariable("writer"));

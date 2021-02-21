@@ -11,6 +11,7 @@ import java.util.Comparator;
 @AllArgsConstructor
 @Builder
 public class PaperDTO implements Comparator<PaperDTO> {
+    private Long id;
     private String title;
     private MultipartFile file;
     private double similarProcent;

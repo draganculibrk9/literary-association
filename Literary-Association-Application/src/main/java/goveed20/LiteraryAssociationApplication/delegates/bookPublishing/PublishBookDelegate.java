@@ -8,6 +8,7 @@ import goveed20.LiteraryAssociationApplication.model.enums.WorkingPaperStatus;
 import goveed20.LiteraryAssociationApplication.repositories.BookRepository;
 import goveed20.LiteraryAssociationApplication.repositories.WorkingPaperRepository;
 import goveed20.LiteraryAssociationApplication.repositories.WriterRepository;
+import goveed20.LiteraryAssociationApplication.services.PlagiarismService;
 import goveed20.LiteraryAssociationApplication.utils.NotificationService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -33,6 +34,9 @@ public class PublishBookDelegate implements JavaDelegate {
 
     @Autowired
     private IndexingService indexingService;
+
+    @Autowired
+    private PlagiarismService plagiarismService;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -68,6 +72,14 @@ public class PublishBookDelegate implements JavaDelegate {
         bookRepository.save(book);
 
         indexingService.indexBook(book);
+
+        try {
+            Long uploadedPaperId = (Long) delegateExecution.getVariable("uploaded_paper_id");
+            plagiarismService.deletePaper(uploadedPaperId);
+            plagiarismService.uploadPaper(book.getTitle(), book.getFile(), false);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         notificationService.sendSuccessNotification("Book successfully published");
     }

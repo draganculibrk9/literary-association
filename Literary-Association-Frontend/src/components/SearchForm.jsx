@@ -10,13 +10,13 @@ const SearchForm = () => {
     const [fields, setFields] = useState({
         title: '',
         writers: '',
-        content: '',
+        text: '',
         genre: ''
     })
     const [booleanOps, setBooleanOps] = useState({
         title: 'AND',
         writers: 'AND',
-        content: 'AND',
+        text: 'AND',
         genre: 'AND'
     })
 
@@ -89,13 +89,13 @@ const SearchForm = () => {
                 value={fields['writers']}
                 onChange={({ target }) => setFields({ ...fields, writers: target.value })}
             />
-            <BooleanOperationButton name="content" setValue={setBooleanOp} value={booleanOps['content']}/>
+            <BooleanOperationButton name="text" setValue={setBooleanOp} value={booleanOps['text']}/>
             <Form.Control
                 as="input"
                 pattern='^[\p{L}]+([\s]{1,1}[\p{L}]+)*$|^"[\p{L}]+([\s]{1,1}[\p{L}]+)*"$'
-                placeholder="content"
-                value={fields['content']}
-                onChange={({ target }) => setFields({ ...fields, content: target.value })}
+                placeholder="text"
+                value={fields['text']}
+                onChange={({ target }) => setFields({ ...fields, text: target.value })}
             />
             <BooleanOperationButton name="genre" setValue={setBooleanOp} value={booleanOps['genre']}/>
             <Form.Control

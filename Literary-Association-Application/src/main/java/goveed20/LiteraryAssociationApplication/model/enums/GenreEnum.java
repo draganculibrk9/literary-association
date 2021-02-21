@@ -14,6 +14,8 @@ public enum GenreEnum {
     THRILLER("Triler"),
     COOKBOOKS("Kuvar"),
     CRIME("Krimi"),
+    CLASSICS("Klasična književnost"),
+    SCIENCE("Nauka"),
     EROTIC("Erotika");
 
     public final String serbianName;

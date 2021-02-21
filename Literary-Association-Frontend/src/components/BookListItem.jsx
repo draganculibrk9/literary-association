@@ -1,6 +1,8 @@
 import React from 'react'
 import { Button, Col, ListGroup, Row } from 'react-bootstrap'
 import { Link, useHistory } from 'react-router-dom'
+import ReactHtmlParser from 'react-html-parser'
+
 
 const BookListItem = ({ id, title, openAccess, basicInfo, text }) => {
     const history = useHistory()
@@ -23,7 +25,9 @@ const BookListItem = ({ id, title, openAccess, basicInfo, text }) => {
                 </Col>
             </Row>
             <Row>
-                <Col>{text}</Col>
+                <Col>
+                    {ReactHtmlParser(text)}
+                </Col>
             </Row>
         </ListGroup.Item>
     )

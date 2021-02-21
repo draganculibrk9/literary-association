@@ -11,12 +11,14 @@ import goveed20.LiteraryAssociationApplication.repositories.GenreRepository;
 import goveed20.LiteraryAssociationApplication.repositories.RetailerRepository;
 import goveed20.LiteraryAssociationApplication.services.CamundaUserService;
 import goveed20.LiteraryAssociationApplication.services.LocationService;
+import goveed20.LiteraryAssociationApplication.services.PlagiarismService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -51,9 +53,12 @@ public class DummyDataService {
     @Autowired
     private IndexingService indexingService;
 
+    @Autowired
+    private PlagiarismService plagiarismService;
+
 
     @EventListener(ApplicationReadyEvent.class)
-    public void addDummyData() {
+    public void addDummyData() throws IOException {
         indexingService.deleteAllIndexes();
 
         if (baseUserRepository.findAllByRole(UserRole.BOARD_MEMBER).isEmpty()) {
@@ -92,10 +97,6 @@ public class DummyDataService {
             if (genreRepository.findAll().isEmpty()) {
                 Arrays.stream(GenreEnum.values()).forEach(e -> genreRepository.save(new Genre(null, e)));
             }
-
-            Genre g1 = genreRepository.findByGenre(GenreEnum.ADVENTURE);
-            Genre g2 = genreRepository.findByGenre(GenreEnum.FANTASY);
-            Genre g3 = genreRepository.findByGenre(GenreEnum.EROTIC);
 
             Reader reader1 = Reader.readerBuilder()
                     .role(UserRole.READER)
@@ -217,25 +218,48 @@ public class DummyDataService {
                     .genres(new HashSet<>())
                     .build();
 
+            Writer writer6 = Writer.writerBuilder()
+                    .role(UserRole.WRITER)
+                    .genres(new HashSet<>())
+                    .location(locationService.createLocation("Serbia", "Pancevo"))
+                    .comments(new HashSet<>())
+                    .transactions(new HashSet<>())
+                    .verified(true)
+                    .membershipApproved(true)
+                    .workingPapers(new HashSet<>())
+                    .books(new HashSet<>())
+                    .username("writer6")
+                    .password(passwordEncoder.encode("Writer1997!"))
+                    .name("Writer")
+                    .surname("Writic")
+                    .email("writer6@maildrop.cc")
+                    .genres(new HashSet<>())
+                    .build();
+
             camundaUserService.createCamundaUser(writer1);
             camundaUserService.createCamundaUser(writer2);
             camundaUserService.createCamundaUser(writer3);
             camundaUserService.createCamundaUser(writer4);
             camundaUserService.createCamundaUser(writer5);
+            camundaUserService.createCamundaUser(writer6);
+
+            Genre fantasy = genreRepository.findByGenre(GenreEnum.FANTASY);
+            Genre classic = genreRepository.findByGenre(GenreEnum.CLASSICS);
+            Genre science = genreRepository.findByGenre(GenreEnum.SCIENCE);
 
             Book b1 = Book.bookBuilder()
-                    .file(String.format("%sUpravljanje digitalnim dokumentima.pdf", booksFolder))
-                    .title("Upravljanje digitalnim dokumentima")
+                    .file(String.format("%sŽivotinjska farma.pdf", booksFolder))
+                    .title("Životinjska farma")
                     .synopsis("synopsis1")
-                    .genre(g1)
+                    .genre(classic)
                     .ISBN("0-3818-9816-4")
-                    .keywords("burek,meso")
-                    .publisher("FTN")
+                    .keywords("dzordz, orvel, klasika")
+                    .publisher("Kontrast izdavaštvo")
                     .publicationYear(2014)
-                    .pages(240)
-                    .publicationPlace("Novi Sad, Srbija")
-                    .price(0.0)
-                    .additionalAuthors("Branko Milosavljevic,Dragan Ivanovic")
+                    .pages(108)
+                    .publicationPlace("Zemun, Srbija")
+                    .price(5.66)
+                    .additionalAuthors("Džordž Orvel")
                     .build();
             b1.setWriter(writer1);
 
@@ -243,77 +267,102 @@ public class DummyDataService {
                     .file(String.format("%sKrv vilenjaka.pdf", booksFolder))
                     .title("Krv vilenjaka")
                     .synopsis("synopsis1")
-                    .genre(g2)
-                    .ISBN("0-8823-8460-0")
-                    .keywords("burek,sir")
-                    .publisher("Carobna knjiga")
-                    .publicationYear(2014)
+                    .genre(fantasy)
+                    .ISBN("978-86-7702-225-9")
+                    .keywords("veštac, andzej, sapkovski")
+                    .publisher("Čarobna knjiga")
+                    .publicationYear(2012)
                     .pages(317)
-                    .price(16.0)
+                    .price(9.0)
                     .publicationPlace("Beograd, Srbija")
-                    .additionalAuthors("Andzej Sapkovski,Branko Milosavljevic")
+                    .additionalAuthors("Andžej Sapkovski")
                     .build();
             b2.setWriter(writer2);
 
             Book b3 = Book.bookBuilder()
-                    .file(String.format("%sSistemi elektronskog poslovanja.pdf", booksFolder))
-                    .title("Sistemi elektronskog poslovanja")
-                    .synopsis("Sinobsis")
-                    .genre(g3)
+                    .file(String.format("%sLiterarno udruženje.pdf", booksFolder))
+                    .title("Literarno udruženje")
+                    .synopsis("synopsis3")
+                    .genre(science)
                     .ISBN("0-6918-9816-4")
-                    .keywords("burek,sir")
+                    .keywords("projekat, udd, upp, sep")
                     .publisher("FTN")
-                    .publicationYear(2015)
-                    .pages(690)
+                    .publicationYear(2020)
+                    .pages(11)
                     .publicationPlace("Novi Sad, Srbija")
-                    .price(30.0)
-                    .additionalAuthors("Zolata Zolka, Radata Rolka")
+                    .price(0.0)
+                    .additionalAuthors("Dragan Ivanović, Goran Sladić, Miroslav Zarić")
                     .build();
             b3.setWriter(writer3);
 
             Book book = Book.bookBuilder()
-                    .ISBN("123412341234")
-                    .publisher("Carobna kljiga")
-                    .title("Kljiga")
-                    .publicationYear(1998)
-                    .keywords("kljucne reci")
-                    .pages(256)
-                    .publicationPlace("mesto publikacije")
-                    .genre(genreRepository.findByGenre(GenreEnum.COOKBOOKS))
-                    .synopsis("Sinobsis")
-                    .price(302.00)
-                    .file(String.format("%sKljiga.pdf", booksFolder))
-                    .additionalAuthors("Gagata Gagic")
+                    .ISBN("0-8813-8980-3")
+                    .publisher("Sezam Book")
+                    .title("Prokleta avlija")
+                    .publicationYear(2018)
+                    .keywords("ivo, andrić, klasika")
+                    .pages(117)
+                    .publicationPlace("Beograd, Srbija")
+                    .genre(classic)
+                    .synopsis("synopsis4")
+                    .price(11.05)
+                    .file(String.format("%sProkleta avlija.pdf", booksFolder))
+                    .additionalAuthors("Ivo Andrić")
                     .build();
             book.setWriter(writer4);
 
             Book book2 = Book.bookBuilder()
-                    .ISBN("653515341234")
-                    .publisher("Simgidulum")
-                    .title("Tajtl")
-                    .publicationYear(2005)
-                    .keywords("kljucne reci")
-                    .pages(256)
-                    .publicationPlace("mesto publikacije")
-                    .genre(genreRepository.findByGenre(GenreEnum.COOKBOOKS))
-                    .synopsis("Sinobsis")
-                    .price(203.00)
-                    .file(String.format("%sTajtl.pdf", booksFolder))
-                    .additionalAuthors("Ivo Andric,Lazo Lazic")
+                    .ISBN("0-8813-8980-4")
+                    .publisher("Kontrast izdavaštvo")
+                    .title("Stranac")
+                    .publicationYear(2018)
+                    .keywords("alber, kami, klasika")
+                    .pages(102)
+                    .publicationPlace("Zemun, Srbija")
+                    .genre(classic)
+                    .synopsis("synopsis5")
+                    .price(6.29)
+                    .file(String.format("%sStranac.pdf", booksFolder))
+                    .additionalAuthors("Alber Kami")
                     .build();
             book2.setWriter(writer5);
+
+            Book book3 = Book.bookBuilder()
+                    .ISBN("0-8553-8980-4")
+                    .publisher("FTN")
+                    .title("Upravljanje digitalnim dokumentima")
+                    .publicationYear(2014)
+                    .keywords("udžbenik, ftn, digitalni dokumenti")
+                    .pages(240)
+                    .publicationPlace("Novi Sad, Srbija")
+                    .genre(science)
+                    .synopsis("synopsis6")
+                    .price(0.0)
+                    .file(String.format("%sUpravljanje digitalnim dokumentima.pdf", booksFolder))
+                    .additionalAuthors("Branko Milosavljević, Dragan Ivanović")
+                    .build();
+            book3.setWriter(writer6);
 
             bookRepository.save(b1);
             bookRepository.save(b2);
             bookRepository.save(b3);
             bookRepository.save(book);
             bookRepository.save(book2);
+            bookRepository.save(book3);
 
             indexingService.indexBook(b1);
             indexingService.indexBook(b2);
             indexingService.indexBook(b3);
             indexingService.indexBook(book);
             indexingService.indexBook(book2);
+            indexingService.indexBook(book3);
+
+            plagiarismService.uploadPaper(b1.getTitle(), b1.getFile(), false);
+            plagiarismService.uploadPaper(b2.getTitle(), b2.getFile(), false);
+            plagiarismService.uploadPaper(b3.getTitle(), b3.getFile(), false);
+            plagiarismService.uploadPaper(book.getTitle(), book.getFile(), false);
+            plagiarismService.uploadPaper(book2.getTitle(), book2.getFile(), false);
+            plagiarismService.uploadPaper(book3.getTitle(), book3.getFile(), false);
 
             InvoiceItem item = InvoiceItem.builder().name(b3.getTitle())
                     .price(b3.getPrice()).quantity(1).build();
