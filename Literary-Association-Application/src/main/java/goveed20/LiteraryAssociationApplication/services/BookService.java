@@ -9,6 +9,7 @@ import goveed20.LiteraryAssociationApplication.elasticsearch.utils.ResultMapper;
 import goveed20.LiteraryAssociationApplication.exceptions.BusinessProcessException;
 import goveed20.LiteraryAssociationApplication.exceptions.NotFoundException;
 import goveed20.LiteraryAssociationApplication.model.*;
+import goveed20.LiteraryAssociationApplication.model.Reader;
 import goveed20.LiteraryAssociationApplication.model.enums.TransactionStatus;
 import goveed20.LiteraryAssociationApplication.model.enums.UserRole;
 import goveed20.LiteraryAssociationApplication.repositories.BookRepository;
@@ -84,6 +85,13 @@ public class BookService {
                     boolQueryBuilder.should(QueryBuilders.commonTermsQuery(key, value));
                 }
             }
+        });
+
+        Reader reader = (goveed20.LiteraryAssociationApplication.model.Reader)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        getBookTitles(reader).forEach(title -> {
+            boolQueryBuilder.mustNot(QueryBuilders.commonTermsQuery("title", title));
         });
 
         SearchQuery query = queryBuilder.withQuery(boolQueryBuilder).withHighlightFields(

@@ -84,7 +84,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/login", "/process/start", "/register/**", "/h2/**", "/transaction/*/*",
-                        "/notificationEndpoint/**", "/book/search")
+                        "/notificationEndpoint/**")
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/task")
                 .permitAll()

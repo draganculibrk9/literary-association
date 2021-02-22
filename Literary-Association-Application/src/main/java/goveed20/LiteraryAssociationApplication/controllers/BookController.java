@@ -22,7 +22,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    //@PreAuthorize("hasAuthority('READER')")
+    @PreAuthorize("hasAuthority('READER')")
     @PostMapping("/search")
     public ResponseEntity<Page<BookIndexingUnit>> searchBooks(@RequestBody SearchQueryDTO searchQuery) {
         return new ResponseEntity<>(bookService.searchBooks(searchQuery), HttpStatus.OK);
