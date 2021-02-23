@@ -1,7 +1,6 @@
 package goveed20.LiteraryAssociationApplication.utils;
 
 import goveed20.LiteraryAssociationApplication.elasticsearch.services.IndexingService;
-import goveed20.LiteraryAssociationApplication.elasticsearch.units.BetaReaderIndexingUnit;
 import goveed20.LiteraryAssociationApplication.model.*;
 import goveed20.LiteraryAssociationApplication.model.enums.GenreEnum;
 import goveed20.LiteraryAssociationApplication.model.enums.TransactionStatus;
@@ -10,7 +9,6 @@ import goveed20.LiteraryAssociationApplication.repositories.BaseUserRepository;
 import goveed20.LiteraryAssociationApplication.repositories.BookRepository;
 import goveed20.LiteraryAssociationApplication.repositories.GenreRepository;
 import goveed20.LiteraryAssociationApplication.repositories.RetailerRepository;
-import goveed20.LiteraryAssociationApplication.services.BetaReaderService;
 import goveed20.LiteraryAssociationApplication.services.CamundaUserService;
 import goveed20.LiteraryAssociationApplication.services.LocationService;
 import goveed20.LiteraryAssociationApplication.services.PlagiarismService;
@@ -57,13 +55,14 @@ public class DummyDataService {
     @Autowired
     private PlagiarismService plagiarismService;
 
-    @Autowired
-    private BetaReaderService betaReaderService;
-
 
     @EventListener(ApplicationReadyEvent.class)
     public void addDummyData() throws IOException {
         indexingService.deleteAllIndexes();
+
+        Location noviSad = locationService.createLocation("Serbia", "Novi Sad");
+        Location split = locationService.createLocation("Croatia", "Split");
+        Location berlin = locationService.createLocation("Germany", "Berlin");
 
         if (baseUserRepository.findAllByRole(UserRole.BOARD_MEMBER).isEmpty()) {
             BaseUser boardMember1 = BaseUser.builder()
@@ -74,7 +73,7 @@ public class DummyDataService {
                     .password(passwordEncoder.encode("board_member_1"))
                     .verified(true)
                     .role(UserRole.BOARD_MEMBER)
-                    .location(locationService.createLocation("Serbia", "Pancevo"))
+                    .location(noviSad.toBuilder().build())
                     .build();
 
             BaseUser boardMember2 = BaseUser.builder()
@@ -85,7 +84,7 @@ public class DummyDataService {
                     .verified(true)
                     .role(UserRole.BOARD_MEMBER)
                     .password(passwordEncoder.encode("board_member_2"))
-                    .location(locationService.createLocation("Serbia", "Leskovac"))
+                    .location(noviSad.toBuilder().build())
                     .build();
 
             baseUserRepository.save(boardMember1);
@@ -113,7 +112,7 @@ public class DummyDataService {
                     .transactions(new HashSet<>())
                     .genres(new HashSet<>())
                     .betaReader(false)
-                    .location(locationService.createLocation("Serbia", "Sremska Mitrovica"))
+                    .location(noviSad.toBuilder().build())
                     .verified(true)
                     .build();
 
@@ -128,7 +127,7 @@ public class DummyDataService {
                     .transactions(new HashSet<>())
                     .genres(new HashSet<>())
                     .betaReader(true)
-                    .location(locationService.createLocation("Serbia", "Sremska Kamenica"))
+                    .location(noviSad.toBuilder().build())
                     .verified(true)
                     .build();
 
@@ -151,7 +150,7 @@ public class DummyDataService {
                     .transactions(new HashSet<>())
                     .genres(new HashSet<>())
                     .betaReader(true)
-                    .location(locationService.createLocation("Croatia", "Split"))
+                    .location(split.toBuilder().build())
                     .verified(true)
                     .build();
 
@@ -162,10 +161,32 @@ public class DummyDataService {
 
             reader3.setBetaReaderStatus(status2);
 
+            Reader reader4 = Reader.readerBuilder()
+                    .role(UserRole.READER)
+                    .username("reader4")
+                    .password(passwordEncoder.encode("password4"))
+                    .name("reader4")
+                    .surname("reader4")
+                    .email("reader4@maildrop.cc")
+                    .comments(new HashSet<>())
+                    .transactions(new HashSet<>())
+                    .genres(new HashSet<>())
+                    .betaReader(true)
+                    .location(berlin.toBuilder().build())
+                    .verified(true)
+                    .build();
+
+            BetaReaderStatus status3 = BetaReaderStatus.builder()
+                    .reader(reader4)
+                    .betaGenres(new HashSet<>(genreRepository.findAll()))
+                    .build();
+
+            reader4.setBetaReaderStatus(status3);
+
             Writer writer1 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
                     .genres(new HashSet<>())
-                    .location(locationService.createLocation("Serbia", "Novi Sad"))
+                    .location(noviSad.toBuilder().build())
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .verified(true)
@@ -183,7 +204,7 @@ public class DummyDataService {
             Writer writer2 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
                     .genres(new HashSet<>())
-                    .location(locationService.createLocation("Serbia", "Zrenjanin"))
+                    .location(noviSad.toBuilder().build())
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .verified(true)
@@ -201,7 +222,7 @@ public class DummyDataService {
             Writer writer3 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
                     .genres(new HashSet<>())
-                    .location(locationService.createLocation("Serbia", "Belgrade"))
+                    .location(noviSad.toBuilder().build())
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .verified(true)
@@ -219,7 +240,7 @@ public class DummyDataService {
             Writer writer4 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
                     .genres(new HashSet<>())
-                    .location(locationService.createLocation("Serbia", "Kragujevac"))
+                    .location(noviSad.toBuilder().build())
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .verified(true)
@@ -237,7 +258,7 @@ public class DummyDataService {
             Writer writer5 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
                     .genres(new HashSet<>())
-                    .location(locationService.createLocation("Serbia", "Nis"))
+                    .location(noviSad.toBuilder().build())
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .verified(true)
@@ -255,7 +276,7 @@ public class DummyDataService {
             Writer writer6 = Writer.writerBuilder()
                     .role(UserRole.WRITER)
                     .genres(new HashSet<>())
-                    .location(locationService.createLocation("Serbia", "Pancevo"))
+                    .location(noviSad.toBuilder().build())
                     .comments(new HashSet<>())
                     .transactions(new HashSet<>())
                     .verified(true)
@@ -423,12 +444,16 @@ public class DummyDataService {
             baseUserRepository.save(reader1);
             baseUserRepository.save(reader2);
             baseUserRepository.save(reader3);
+            baseUserRepository.save(reader4);
+
             camundaUserService.createCamundaUser(reader1);
             camundaUserService.createCamundaUser(reader2);
             camundaUserService.createCamundaUser(reader3);
+            camundaUserService.createCamundaUser(reader4);
 
             indexingService.indexBetaReader(reader2);
             indexingService.indexBetaReader(reader3);
+            indexingService.indexBetaReader(reader4);
         }
 
 
@@ -441,7 +466,7 @@ public class DummyDataService {
                     .name("Editor")
                     .surname("Editorovic")
                     .verified(true)
-                    .location(locationService.createLocation("Serbia", "Novi Sad"))
+                    .location(noviSad.toBuilder().build())
                     .build();
 
             BaseUser editor2 = BaseUser.builder()
@@ -452,7 +477,7 @@ public class DummyDataService {
                     .name("Mujo")
                     .surname("Alen")
                     .verified(true)
-                    .location(locationService.createLocation("Serbia", "Novi Sad"))
+                    .location(noviSad.toBuilder().build())
                     .build();
 
             BaseUser editor3 = BaseUser.builder()
@@ -463,7 +488,7 @@ public class DummyDataService {
                     .name("Jurica")
                     .surname("Juric")
                     .verified(true)
-                    .location(locationService.createLocation("Serbia", "Novi Sad"))
+                    .location(noviSad.toBuilder().build())
                     .build();
 
             BaseUser editor4 = BaseUser.builder()
@@ -474,7 +499,7 @@ public class DummyDataService {
                     .name("Pero")
                     .surname("Nikic")
                     .verified(true)
-                    .location(locationService.createLocation("Serbia", "Novi Sad"))
+                    .location(noviSad.toBuilder().build())
                     .build();
 
             baseUserRepository.save(editor);
@@ -496,22 +521,12 @@ public class DummyDataService {
                     .name("Lector")
                     .surname("Lectorovic")
                     .verified(true)
-                    .location(locationService.createLocation("Serbia", "Novi Sad"))
+                    .location(noviSad.toBuilder().build())
                     .build();
 
             baseUserRepository.save(lector);
             camundaUserService.createCamundaUser(lector);
         }
         System.out.println("Created dummy data!");
-
-        //testGeoSearch();
-    }
-
-    private void testGeoSearch() {
-        // candidates by genre are reader2 and reader3
-        // coordinates are set to Split, Croatia
-        // -> reader2 should be printed
-        List<BetaReaderIndexingUnit> units = betaReaderService.getBetaReaders("Nauka", 43.508133, 16.440193);
-        units.forEach(y -> System.out.println(y.getUsername()));
     }
 }
